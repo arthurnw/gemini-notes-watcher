@@ -18,7 +18,7 @@ SUMMARY_PROMPT='You are a meeting notes summarizer. You will receive a meeting t
 Summary of the key sections and topics discussed in the meeting. Use subsections (###) to organize by topic. Be thorough but concise.
 
 ## Action Items
-Bulleted list of action items identified in the transcript. Include the responsible person if mentioned.
+Markdown checkbox list of action items identified in the transcript. Use "- [ ]" for each item. Include the responsible person if mentioned.
 
 Output ONLY the markdown content. No preamble, no commentary.'
 
