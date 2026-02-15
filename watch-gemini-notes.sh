@@ -22,7 +22,7 @@ Bulleted list of action items identified in the transcript. Include the responsi
 
 Output ONLY the markdown content. No preamble, no commentary.'
 
-fswatch -0 "$WATCH_DIR" | while read -d "" file; do
+fswatch -0 --event Created "$WATCH_DIR" | while read -d "" file; do
   filename=$(basename "$file")
 
   if [[ "$filename" == *"Notes by Gemini"* ]]; then
