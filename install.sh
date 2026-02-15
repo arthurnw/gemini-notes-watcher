@@ -8,6 +8,7 @@ INSTALL_DIR="$HOME/scripts"
 PLIST_NAME="com.user.gemini-notes-watcher.plist"
 PLIST_DIR="$HOME/Library/LaunchAgents"
 MODEL="${1:-sonnet}"
+DEST_DIR="${2:-$HOME/vaults/obsidian/02-work/gemini-notes}"
 
 if [[ "$MODEL" != "haiku" && "$MODEL" != "sonnet" && "$MODEL" != "opus" ]]; then
   echo "Invalid model: $MODEL (must be haiku, sonnet, or opus)"
@@ -16,6 +17,7 @@ fi
 
 echo "=== Gemini Notes Watcher Installer ==="
 echo "Model: $MODEL"
+echo "Destination: $DEST_DIR"
 echo
 
 # Check for fswatch
@@ -59,7 +61,7 @@ cat > "$PLIST_DIR/$PLIST_NAME" <<EOF
     <array>
         <string>/bin/bash</string>
         <string>-c</string>
-        <string>${INSTALL_DIR}/${SCRIPT_NAME} ${MODEL}</string>
+        <string>${INSTALL_DIR}/${SCRIPT_NAME} ${MODEL} ${DEST_DIR}</string>
     </array>
     <key>RunAtLoad</key>
     <true/>
@@ -95,4 +97,4 @@ echo "  5. Restart the watcher:"
 echo "     launchctl unload ~/Library/LaunchAgents/$PLIST_NAME"
 echo "     launchctl load ~/Library/LaunchAgents/$PLIST_NAME"
 echo
-echo "To configure, edit $INSTALL_DIR/$SCRIPT_NAME and update WATCH_DIR and DEST_DIR."
+echo "To reconfigure, re-run: ./install.sh [model] [dest_dir]"
