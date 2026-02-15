@@ -37,8 +37,18 @@ fswatch -0 --event Created "$WATCH_DIR" | while read -d "" file; do
       continue
     fi
 
-    # Generate output filename (dash-case, alphanumeric and dashes only)
-    newname=$(echo "$filename" | tr '[:upper:]' '[:lower:]' | sed 's/\.[^.]*$//' | sed 's/[^a-z0-9]/-/g' | tr -s '-' | sed 's/^-//;s/-$//').md
+    # Generate output filename: YYYY-MM-DD-HH-MM-TZ-dash-case-title.md
+    # Extract date from filename if present, otherwise use detection time
+    if [[ "$filename" =~ ([0-9]{4}_[0-9]{2}_[0-9]{2})\ ([0-9]{2}_[0-9]{2})\ ([A-Z]{2,5}) ]]; then
+      date_part="${BASH_REMATCH[1]//_/-}"
+      time_part="${BASH_REMATCH[2]//_/-}"
+      tz_part=$(echo "${BASH_REMATCH[3]}" | tr '[:upper:]' '[:lower:]')
+      timestamp="${date_part}-${time_part}-${tz_part}"
+    else
+      timestamp=$(date +"%Y-%m-%d-%H-%M-%Z" | tr '[:upper:]' '[:lower:]')
+    fi
+    title=$(echo "$filename" | sed 's/\.[^.]*$//' | sed 's/Notes by Gemini//' | sed 's/[0-9]\{4\}_[0-9]\{2\}_[0-9]\{2\} [0-9]\{2\}_[0-9]\{2\} [A-Z]\{2,5\}//' | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9]/-/g' | tr -s '-' | sed 's/^-//;s/-$//')
+    newname="${timestamp}-${title}.md"
 
     # Move transcript to temp for processing
     temp_file="$TEMP_DIR/$filename"
