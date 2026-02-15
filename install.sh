@@ -63,6 +63,8 @@ cat > "$PLIST_DIR/$PLIST_NAME" <<EOF
         <string>-c</string>
         <string>${INSTALL_DIR}/${SCRIPT_NAME} ${MODEL} ${DEST_DIR}</string>
     </array>
+    <key>WorkingDirectory</key>
+    <string>/tmp</string>
     <key>RunAtLoad</key>
     <true/>
     <key>KeepAlive</key>
