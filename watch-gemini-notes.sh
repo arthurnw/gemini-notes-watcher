@@ -1,5 +1,6 @@
 #!/bin/bash
 
+MODEL="${1:-sonnet}"
 WATCH_DIR="$HOME/Downloads"
 DEST_DIR="$HOME/vaults/obsidian/02-work/gemini-notes"  # change to your desired folder
 TEMP_DIR="/tmp/gemini-notes-processing"
@@ -52,7 +53,7 @@ fswatch -0 --event Created "$WATCH_DIR" | while read -d "" file; do
     echo "Generating summary with Claude..."
     summary_file="$TEMP_DIR/$newname"
 
-    claude -p "$SUMMARY_PROMPT" --no-hooks < "$temp_file" --output-format text > "$summary_file" 2>/tmp/gemini-notes-claude.err
+    claude -p "$SUMMARY_PROMPT" --no-hooks --model "$MODEL" < "$temp_file" --output-format text > "$summary_file" 2>/tmp/gemini-notes-claude.err
     claude_exit=$?
 
     if [[ $claude_exit -ne 0 ]]; then

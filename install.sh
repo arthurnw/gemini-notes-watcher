@@ -7,8 +7,15 @@ SCRIPT_NAME="watch-gemini-notes.sh"
 INSTALL_DIR="$HOME/scripts"
 PLIST_NAME="com.user.gemini-notes-watcher.plist"
 PLIST_DIR="$HOME/Library/LaunchAgents"
+MODEL="${1:-sonnet}"
+
+if [[ "$MODEL" != "haiku" && "$MODEL" != "sonnet" && "$MODEL" != "opus" ]]; then
+  echo "Invalid model: $MODEL (must be haiku, sonnet, or opus)"
+  exit 1
+fi
 
 echo "=== Gemini Notes Watcher Installer ==="
+echo "Model: $MODEL"
 echo
 
 # Check for fswatch
@@ -52,7 +59,7 @@ cat > "$PLIST_DIR/$PLIST_NAME" <<EOF
     <array>
         <string>/bin/bash</string>
         <string>-c</string>
-        <string>${INSTALL_DIR}/${SCRIPT_NAME}</string>
+        <string>${INSTALL_DIR}/${SCRIPT_NAME} ${MODEL}</string>
     </array>
     <key>RunAtLoad</key>
     <true/>
