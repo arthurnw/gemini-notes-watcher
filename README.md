@@ -1,20 +1,31 @@
 # Gemini Notes Watcher
 
-A macOS file watcher that automatically renames and moves Google Docs "Notes by Gemini" exports from Downloads to a specified folder.
+A macOS file watcher that automatically summarizes Google Meet transcript exports using Claude and saves the results to a specified folder.
 
 ## What It Does
 
-When Google Meet generates meeting notes via Gemini, exporting them as markdown drops a file like:
+When Google Meet generates meeting notes via Gemini, you export the **transcript tab** as markdown. This drops a file like:
 
 ```
 Meeting Notes - 2026_02_13 11_56 EST - Notes by Gemini.md
 ```
 
-This watcher detects files matching `*Notes by Gemini*` in your Downloads folder, converts the filename to dash-case, and moves it to a destination folder:
+The watcher:
 
-```
-meeting-notes-2026_02_13-11_56-est-notes-by-gemini.md
-```
+1. Detects files matching `*Notes by Gemini*` in your Downloads folder
+2. Moves the transcript to a temp directory
+3. Passes it to the Claude CLI to generate a structured summary with:
+   - **Summary** - 1-3 sentence executive summary
+   - **Details** - Key topics organized by section
+   - **Action Items** - Action items with responsible parties
+4. Saves the summary with a sanitized filename in the destination folder
+5. Cleans up the temp transcript
+
+Output filename: `meeting-notes-2026-02-13-11-56-est-notes-by-gemini.md`
+
+Filenames are lowercased, non-alphanumeric characters replaced with dashes, and consecutive dashes collapsed.
+
+If Claude summarization fails, the original transcript is moved to the destination as a fallback.
 
 It runs as a macOS Launch Agent, starting automatically on login.
 
@@ -23,6 +34,8 @@ It runs as a macOS Launch Agent, starting automatically on login.
 - macOS
 - [Homebrew](https://brew.sh)
 - fswatch: `brew install fswatch`
+- [Claude Code CLI](https://docs.anthropic.com/en/docs/claude-code): `npm install -g @anthropic-ai/claude-code`
+  - Must be authenticated (`claude` should work from the terminal)
 
 ## Installation
 
@@ -35,7 +48,7 @@ It runs as a macOS Launch Agent, starting automatically on login.
 ```
 
 The install script will:
-- Check that `fswatch` is installed
+- Check that `fswatch` and `claude` are installed
 - Copy the watcher script to `~/scripts/`
 - Install a Launch Agent plist to `~/Library/LaunchAgents/`
 - Load the Launch Agent
@@ -56,9 +69,9 @@ launchctl unload ~/Library/LaunchAgents/com.user.gemini-notes-watcher.plist
 launchctl load ~/Library/LaunchAgents/com.user.gemini-notes-watcher.plist
 ```
 
-## Google Docs Export Tip
+## Google Docs Export
 
-To export only the first tab of a multi-tab Google Doc (notes without transcript), append `&tab=t.0` to the export URL:
+To export only the transcript tab of a multi-tab Google Doc, append `&tab=t.0` to the export URL (adjust the tab index as needed):
 
 ```
 https://docs.google.com/document/d/YOUR_DOC_ID/export?format=md&tab=t.0
@@ -71,9 +84,10 @@ Edit `~/scripts/watch-gemini-notes.sh` to change:
 | Variable | Default | Description |
 |----------|---------|-------------|
 | `WATCH_DIR` | `$HOME/Downloads` | Folder to monitor for new files |
-| `DEST_DIR` | `$HOME/vaults/obsidian/02-work/gemini-notes` | Where processed files are moved |
+| `DEST_DIR` | `$HOME/vaults/obsidian/02-work/gemini-notes` | Where summary files are saved |
+| `TEMP_DIR` | `/tmp/gemini-notes-processing` | Temp directory for processing |
 
-The filename match pattern (`*Notes by Gemini*`) can also be changed in the script.
+The filename match pattern (`*Notes by Gemini*`) and the Claude prompt (`SUMMARY_PROMPT`) can also be changed in the script.
 
 ## Useful Commands
 
@@ -92,6 +106,9 @@ tail -f /tmp/gemini-notes-watcher.log
 
 # View errors
 cat /tmp/gemini-notes-watcher.err
+
+# View Claude errors (if summarization fails)
+cat /tmp/gemini-notes-claude.err
 ```
 
 ## Uninstall

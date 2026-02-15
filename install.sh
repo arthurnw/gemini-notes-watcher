@@ -19,6 +19,14 @@ if ! command -v fswatch &>/dev/null; then
 fi
 echo "fswatch found: $(which fswatch)"
 
+# Check for claude CLI
+if ! command -v claude &>/dev/null; then
+  echo "Claude Code CLI is not installed. Install it with:"
+  echo "  npm install -g @anthropic-ai/claude-code"
+  exit 1
+fi
+echo "claude found: $(which claude)"
+
 # Unload existing launch agent if present
 if launchctl list 2>/dev/null | grep -q "com.user.gemini-notes-watcher"; then
   echo "Stopping existing watcher..."
@@ -57,7 +65,7 @@ cat > "$PLIST_DIR/$PLIST_NAME" <<EOF
     <key>EnvironmentVariables</key>
     <dict>
         <key>PATH</key>
-        <string>/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin</string>
+        <string>/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:$HOME/.local/bin</string>
     </dict>
 </dict>
 </plist>
