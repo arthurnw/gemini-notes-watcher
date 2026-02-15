@@ -53,7 +53,7 @@ fswatch -0 --event Created "$WATCH_DIR" | while read -d "" file; do
     echo "Generating summary with Claude..."
     summary_file="$TEMP_DIR/$newname"
 
-    claude -p "$SUMMARY_PROMPT" --model "$MODEL" < "$temp_file" --output-format text > "$summary_file" 2>/tmp/gemini-notes-claude.err
+    claude -p "$SUMMARY_PROMPT" --model "$MODEL" --setting-sources "" < "$temp_file" --output-format text > "$summary_file" 2>/tmp/gemini-notes-claude.err
     claude_exit=$?
 
     if [[ $claude_exit -ne 0 ]]; then
