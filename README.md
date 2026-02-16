@@ -84,7 +84,7 @@ Edit `~/scripts/watch-gemini-notes.sh` to change:
 | Variable | Default | Description |
 |----------|---------|-------------|
 | `WATCH_DIR` | `$HOME/Downloads` | Folder to monitor for new files |
-| `DEST_DIR` | `$HOME/vaults/obsidian/02-work/gemini-notes` | Where summary files are saved |
+| `DEST_DIR` | `$HOME/vaults/obsidian` | Where summary files are saved |
 | `TEMP_DIR` | `/tmp/gemini-notes-processing` | Temp directory for processing |
 
 The filename match pattern (`*Notes by Gemini*`) and the Claude prompt (`SUMMARY_PROMPT`) can also be changed in the script.

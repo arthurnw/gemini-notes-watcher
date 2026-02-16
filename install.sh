@@ -8,7 +8,7 @@ INSTALL_DIR="$HOME/scripts"
 PLIST_NAME="com.user.gemini-notes-watcher.plist"
 PLIST_DIR="$HOME/Library/LaunchAgents"
 MODEL="${1:-sonnet}"
-DEST_DIR="${2:-$HOME/vaults/obsidian/02-work/gemini-notes}"
+DEST_DIR="${2:-$HOME/vaults/obsidian}"
 
 if [[ "$MODEL" != "haiku" && "$MODEL" != "sonnet" && "$MODEL" != "opus" ]]; then
   echo "Invalid model: $MODEL (must be haiku, sonnet, or opus)"

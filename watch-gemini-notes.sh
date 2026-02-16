@@ -2,7 +2,7 @@
 
 MODEL="${1:-sonnet}"
 WATCH_DIR="$HOME/Downloads"
-DEST_DIR="${2:-$HOME/vaults/obsidian/02-work/gemini-notes}"
+DEST_DIR="${2:-$HOME/vaults/obsidian}"
 TEMP_DIR="/tmp/gemini-notes-processing"
 
 mkdir -p "$DEST_DIR" "$TEMP_DIR"
